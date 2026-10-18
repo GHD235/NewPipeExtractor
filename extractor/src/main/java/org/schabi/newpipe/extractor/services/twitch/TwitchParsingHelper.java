@@ -117,19 +117,28 @@ public final class TwitchParsingHelper {
     }
 
     /**
-     * Twitch image URLs either contain a fixed size or {@code {width}x{height}} placeholders.
+     * Twitch image URLs either contain a fixed size or {@code {width}x{height}} (or
+     * {@code %{width}x%{height}}) placeholders.
+     *
+     * @param url    the image URL given by Twitch
+     * @param width  the width to ask for
+     * @param height the height to ask for
+     * @return the image, or no image if Twitch has none yet
      */
     @Nonnull
     public static List<Image> getImages(@Nullable final String url,
                                         final int width,
                                         final int height) {
-        if (url == null || url.isEmpty()) {
+        // past broadcasts that are still being processed point to an image that Twitch refuses
+        // (403), better no image than a broken one
+        if (url == null || url.isEmpty() || url.contains("/_404/")) {
             return List.of();
         }
-        final String fixedUrl = url.replace("{width}", String.valueOf(width))
-                .replace("%{width}", String.valueOf(width))
-                .replace("{height}", String.valueOf(height))
-                .replace("%{height}", String.valueOf(height));
+        // "%{width}" must go first: replacing "{width}" first would leave "%640"
+        final String fixedUrl = url.replace("%{width}", String.valueOf(width))
+                .replace("{width}", String.valueOf(width))
+                .replace("%{height}", String.valueOf(height))
+                .replace("{height}", String.valueOf(height));
         return List.of(new Image(fixedUrl, height, width,
                 Image.ResolutionLevel.fromHeight(height)));
     }
