@@ -19,3 +19,12 @@ Las notas principales del proyecto (decisiones, hoja de ruta, estado, pendientes
 `extractor/src/main/java/org/schabi/newpipe/extractor/services/youtube/`:
 descifrado de firmas y parámetro `n` (`YoutubeSignaturesTest`, player JS), clientes
 `youtubei` imitados, y parseo de renderers JSON en `extractors/`.
+
+## Twitch (servicio id 5, `services/twitch/`)
+- Todo va por `https://gql.twitch.tv/gql` con el Client-ID anónimo de la web y consultas GQL
+  escritas a mano (`TwitchGqlFields`). Reproducción: `streamPlaybackAccessToken` /
+  `videoPlaybackAccessToken` → lista maestra HLS de `usher.ttvnw.net` (`TwitchStreamExtractor`).
+- Ids de stream: `<login>` = directo, `videos/<id>` = VOD. Canal: `twitch.tv/<login>/videos`.
+- Mocks: el RecordingDownloader cambia las IPs por 127.0.0.1 y eso invalida la firma del token
+  de usher (403). Tras regrabar `TwitchExtractorsTest`, sustituir la respuesta 403 de usher por
+  una lista HLS real descargada aparte con un token válido (IPs saneadas).
