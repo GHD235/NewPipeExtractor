@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.Page;
@@ -44,6 +45,7 @@ public class PeertubeCommentsExtractorTest {
         }
 
         @Test
+        @Disabled("VideoPrime: PeerTube is not registered, so CommentsInfo cannot resolve its URL")
         void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
             final String comment = "I love this. ❤";
 
@@ -110,6 +112,7 @@ public class PeertubeCommentsExtractorTest {
         }
 
         @Test
+        @Disabled("VideoPrime: PeerTube is not registered, so CommentsInfo cannot resolve its URL")
         void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
             final CommentsInfo commentsInfo = CommentsInfo.getInfo("https://framatube.org/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3");
             assertTrue(commentsInfo.getErrors().isEmpty());

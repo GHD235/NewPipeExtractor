@@ -47,9 +47,13 @@ public final class ServiceList {
     /**
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
+     *
+     * <p>
+     * VideoPrime only offers YouTube and Twitch. The other services keep their code and ids
+     * (so upstream changes still merge cleanly), but they are not registered.
+     * </p>
      */
-    private static final List<StreamingService> SERVICES = List.of(
-            YouTube, SoundCloud, MediaCCC, PeerTube, Bandcamp, Twitch);
+    private static final List<StreamingService> SERVICES = List.of(YouTube, Twitch);
 
     /**
      * Get all the supported services.

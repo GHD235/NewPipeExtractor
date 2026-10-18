@@ -1,12 +1,14 @@
 package org.schabi.newpipe.extractor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.NewPipe.getServiceByUrl;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.ServiceList.Twitch;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.util.HashSet;
 
@@ -40,7 +42,10 @@ public class GeneralServiceTest {
         assertEquals(YouTube, getServiceByUrl("https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZiZxtDDRCi6uhfTH4FilpH"));
         assertEquals(YouTube, getServiceByUrl("https://www.google.it/url?sa=t&rct=j&q=&esrc=s&cd=&cad=rja&uact=8&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHu80uDzh8RY&source=video"));
 
-        assertEquals(SoundCloud, getServiceByUrl("https://soundcloud.com/pegboardnerds"));
-        assertEquals(SoundCloud, getServiceByUrl("https://www.google.com/url?sa=t&url=https%3A%2F%2Fsoundcloud.com%2Fciaoproduction&rct=j&q=&esrc=s&source=web&cd="));
+        // VideoPrime: only YouTube and Twitch are registered
+        assertEquals(Twitch, getServiceByUrl("https://www.twitch.tv/ibai"));
+        assertEquals(Twitch, getServiceByUrl("https://www.twitch.tv/ibai/videos"));
+        assertThrows(ExtractionException.class,
+                () -> getServiceByUrl("https://soundcloud.com/pegboardnerds"));
     }
 }
