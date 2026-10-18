@@ -30,6 +30,21 @@ public class TvExtractorsTest implements InitNewPipeTest {
     }
 
     @Test
+    void drmChannelsOpenTheOfficialApp() throws Exception {
+        final List<TvChannelList.TvChannel> channels = TvChannelList.getChannels();
+        final TvChannelList.TvChannel antena3 = channels.stream()
+                .filter(c -> c.getName().equals("Antena 3")).findFirst().orElseThrow();
+        assertEquals(TvChannelList.Format.OFFICIAL_APP, antena3.getBestOption().getFormat());
+        assertEquals("https://www.atresplayer.com/directos/antena3/",
+                antena3.getBestOption().getUrl());
+        final TvChannelList.TvChannel telecinco = channels.stream()
+                .filter(c -> c.getName().equals("Telecinco")).findFirst().orElseThrow();
+        assertEquals(TvChannelList.Format.OFFICIAL_APP, telecinco.getBestOption().getFormat());
+        assertTrue(telecinco.getBestOption().getUrl().contains("mediaset")
+                || telecinco.getBestOption().getUrl().contains("mitele"));
+    }
+
+    @Test
     void kioskListsPlayableChannels() throws Exception {
         final KioskExtractor<?> kiosk = TV.getKioskList().getDefaultKioskExtractor();
         kiosk.fetchPage();
