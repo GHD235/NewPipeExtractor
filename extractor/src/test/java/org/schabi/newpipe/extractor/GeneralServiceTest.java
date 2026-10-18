@@ -45,6 +45,9 @@ public class GeneralServiceTest {
         // VideoPrime: only YouTube and Twitch are registered
         assertEquals(Twitch, getServiceByUrl("https://www.twitch.tv/ibai"));
         assertEquals(Twitch, getServiceByUrl("https://www.twitch.tv/ibai/videos"));
+        assertEquals(ServiceList.Local, getServiceByUrl("file:///sdcard/Music/song.m4a"));
+        assertEquals(ServiceList.Local, getServiceByUrl(
+                "content://com.android.externalstorage.documents/document/primary%3AMovies%2Fa.mp4"));
         assertThrows(ExtractionException.class,
                 () -> getServiceByUrl("https://soundcloud.com/pegboardnerds"));
     }
