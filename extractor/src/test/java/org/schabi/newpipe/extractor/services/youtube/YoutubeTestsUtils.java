@@ -29,6 +29,7 @@ public final class YoutubeTestsUtils {
         YoutubeParsingHelper.resetClientVersion();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         YoutubeJavaScriptPlayerManager.clearAllCaches();
+        YoutubeParsingHelper.clearVisitorDataCache();
     }
 
     /**

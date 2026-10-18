@@ -76,6 +76,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1408,6 +1413,102 @@ public final class YoutubeParsingHelper {
         }
     }
 
+    /**
+     * VideoPrime: visitor data per client and region, reused for a while instead of being asked
+     * to YouTube before every video (each request costs about half a second).
+     */
+    private static final Map<String, CachedVisitorData> VISITOR_DATA_CACHE =
+            new ConcurrentHashMap<>();
+    private static final long VISITOR_DATA_TTL_MILLIS = 30 * 60 * 1000L;
+
+    private static final class CachedVisitorData {
+        final String visitorData;
+        final long expiresAt;
+
+        CachedVisitorData(final String visitorData, final long expiresAt) {
+            this.visitorData = visitorData;
+            this.expiresAt = expiresAt;
+        }
+    }
+
+    /**
+     * VideoPrime: forgets the visitor data kept by {@link #getVisitorDataFromInnertube}, e.g. when
+     * YouTube starts refusing requests.
+     */
+    public static void clearVisitorDataCache() {
+        VISITOR_DATA_CACHE.clear();
+    }
+
+    /**
+     * VideoPrime: threads for the InnerTube requests that can be made at the same time. They are
+     * daemon threads, so they never keep the program alive.
+     */
+    private static final ExecutorService PARALLEL_REQUESTS = Executors.newCachedThreadPool(
+            runnable -> {
+                final Thread thread = new Thread(runnable, "YoutubeParallelRequest");
+                thread.setDaemon(true);
+                return thread;
+            });
+
+    /**
+     * VideoPrime: a request that throws the same exceptions as the extractor.
+     *
+     * @param <T> the type of the result
+     */
+    @FunctionalInterface
+    public interface ParallelRequest<T> {
+        /**
+         * @return the result of the request
+         * @throws IOException         if the request fails
+         * @throws ExtractionException if the response cannot be used
+         */
+        T run() throws IOException, ExtractionException;
+    }
+
+    /**
+     * VideoPrime: starts a request in the background, to wait for it with
+     * {@link #awaitParallel(Future)}.
+     *
+     * @param request the request
+     * @param <T>     the type of the result
+     * @return the result to come
+     */
+    @Nonnull
+    public static <T> Future<T> inParallel(@Nonnull final ParallelRequest<T> request) {
+        return PARALLEL_REQUESTS.submit(request::run);
+    }
+
+    /**
+     * VideoPrime: waits for a request started with {@link #inParallel(ParallelRequest)}, throwing
+     * its exception if it failed.
+     *
+     * @param future the request
+     * @param <T>    the type of the result
+     * @return the result of the request
+     * @throws IOException         if the request failed or the wait was interrupted
+     * @throws ExtractionException if the response could not be used
+     */
+    public static <T> T awaitParallel(@Nonnull final Future<T> future)
+            throws IOException, ExtractionException {
+        try {
+            return future.get();
+        } catch (final InterruptedException e) {
+            future.cancel(true);
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted while waiting for a request", e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof IOException) {
+                throw (IOException) cause;
+            } else if (cause instanceof ExtractionException) {
+                throw (ExtractionException) cause;
+            } else if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            }
+            throw new ExtractionException(cause);
+        }
+    }
+
     @Nonnull
     public static String getVisitorDataFromInnertube(
             @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
@@ -1417,6 +1518,15 @@ public final class YoutubeParsingHelper {
             @Nonnull final String innertubeDomainAndVersionEndpoint,
             @Nullable final String embedUrl,
             final boolean useGuideEndpoint) throws IOException, ExtractionException {
+        final String cacheKey = innertubeClientRequestInfo.clientInfo.clientName + " "
+                + innertubeClientRequestInfo.clientInfo.clientVersion + " "
+                + localization.getLocalizationCode() + " " + contentCountry.getCountryCode() + " "
+                + innertubeDomainAndVersionEndpoint + " " + embedUrl + " " + useGuideEndpoint;
+        final CachedVisitorData cached = VISITOR_DATA_CACHE.get(cacheKey);
+        if (cached != null && cached.expiresAt > System.currentTimeMillis()) {
+            return cached.visitorData;
+        }
+
         final JsonBuilder<JsonObject> builder = prepareJsonBuilder(
                 localization, contentCountry, innertubeClientRequestInfo, embedUrl);
 
@@ -1436,6 +1546,8 @@ public final class YoutubeParsingHelper {
             throw new ParsingException("Could not get visitorData");
         }
 
+        VISITOR_DATA_CACHE.put(cacheKey, new CachedVisitorData(visitorData,
+                System.currentTimeMillis() + VISITOR_DATA_TTL_MILLIS));
         return visitorData;
     }
 
