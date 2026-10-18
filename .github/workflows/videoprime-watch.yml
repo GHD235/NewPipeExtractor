@@ -1,0 +1,106 @@
+# VideoPrime: vigilancia diaria de roturas del extractor de YouTube.
+# Ejecuta un conjunto pequeño de tests contra los servicios reales y, si fallan,
+# abre (o actualiza) un issue con la etiqueta "rotura-extractor". Cuando vuelven a
+# pasar, comenta y cierra el issue.
+# Ojo: GitHub solo lanza los `schedule` desde la rama por defecto del repo.
+name: "VideoPrime: vigilancia del extractor"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: videoprime-watch
+  cancel-in-progress: true
+
+jobs:
+  smoke-real:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: gradle
+
+      - name: Tests de YouTube contra servicios reales
+        id: tests
+        continue-on-error: true
+        run: |
+          ./gradlew :extractor:test \
+            -Dorg.gradle.welcome=never \
+            -Ddownloader=REAL \
+            --continue \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.YoutubeSignaturesTest' \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.YoutubeThrottlingParameterDeobfuscationTest' \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptExtractorTest' \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.stream.YoutubeStreamExtractorDefaultTest' \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.search.YoutubeSearchExtractorTest$All' \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.search.YoutubeMusicSearchExtractorTest$MusicSongs' \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.YoutubeChannelExtractorTest$Gronkh' \
+            --tests 'org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest$TimelessPopHits'
+
+      - name: Resumen de fallos
+        if: always()
+        run: |
+          python3 - <<'PY' > summary.md
+          import glob, xml.etree.ElementTree as ET
+          total = failed = skipped = 0
+          rows = []
+          for f in glob.glob("extractor/build/test-results/test/*.xml"):
+              s = ET.parse(f).getroot()
+              total += int(s.get("tests", 0)); skipped += int(s.get("skipped", 0))
+              for c in s.iter("testcase"):
+                  bad = c.find("failure") if c.find("failure") is not None else c.find("error")
+                  if bad is not None:
+                      failed += 1
+                      msg = (bad.get("message") or "").splitlines()[0][:200] if bad.get("message") else ""
+                      rows.append(f"| `{c.get('classname').split('.')[-1]}` | `{c.get('name')}` | {msg.replace('|', '/')} |")
+          print(f"**Tests:** {total} · **Fallos:** {failed} · **Omitidos:** {skipped}\n")
+          if rows:
+              print("| Clase | Test | Mensaje |\n|---|---|---|")
+              print("\n".join(rows[:60]))
+          PY
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Abrir o actualizar issue
+        if: steps.tests.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create rotura-extractor --color B60205 \
+            --description "Detectado por la vigilancia diaria" 2>/dev/null || true
+          { echo "Ejecución: $RUN_URL"; echo; cat summary.md; } > body.md
+          num="$(gh issue list --label rotura-extractor --state open --json number --jq '.[0].number')"
+          if [ -n "$num" ]; then
+            gh issue comment "$num" --body-file body.md
+          else
+            gh issue create --label rotura-extractor \
+              --title "Rotura del extractor de YouTube ($(date -u +%F))" --body-file body.md
+          fi
+
+      - name: Cerrar issue si vuelve a funcionar
+        if: steps.tests.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          for num in $(gh issue list --label rotura-extractor --state open --json number --jq '.[].number'); do
+            gh issue close "$num" --comment "Los tests vuelven a pasar: $RUN_URL"
+          done
+
+      - name: Subir informes de tests
+        if: steps.tests.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: informes-tests
+          path: extractor/build/reports/tests/test/**
