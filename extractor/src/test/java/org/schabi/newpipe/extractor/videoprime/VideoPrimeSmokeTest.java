@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfo;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabInfo;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException;
 import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.search.SearchInfo;
@@ -59,6 +60,7 @@ class VideoPrimeSmokeTest {
     @Test
     void youtubeVideosPlay() throws Exception {
         final List<String> failures = new ArrayList<>();
+        int blockedIp = 0;
         StreamInfo playable = null;
         for (final String id : VIDEO_IDS) {
             final long start = System.nanoTime();
@@ -72,14 +74,24 @@ class VideoPrimeSmokeTest {
                 } else if (playable == null) {
                     playable = info;
                 }
+            } catch (final SignInConfirmNotBotException e) {
+                // YouTube asks GitHub's servers to sign in: their IPs are blocked, the app is not
+                timed("YouTube video " + id + " (IP blocked by YouTube)", start);
+                blockedIp++;
             } catch (final Exception e) {
                 timed("YouTube video " + id + " FAILED", start);
                 failures.add(id + ": " + e);
             }
         }
         System.out.println("VIDEOPRIME YouTube failures: " + failures);
-        assertTrue(failures.size() <= VIDEO_IDS.length / 2,
+        if (blockedIp > 0) {
+            System.out.println("VIDEOPRIME YouTube blocked the IP of this server for " + blockedIp
+                    + " of " + VIDEO_IDS.length + " videos (not a problem of the app)");
+        }
+        assertTrue(failures.size() <= (VIDEO_IDS.length - blockedIp) / 2,
                 "Too many YouTube videos fail: " + failures);
+        assumeTrue(playable != null,
+                "YouTube blocked this server's IP for every video: nothing could be checked");
 
         // the audio must really download: this is where signature or "n" parameter
         // deobfuscation breaks, with 403 errors
