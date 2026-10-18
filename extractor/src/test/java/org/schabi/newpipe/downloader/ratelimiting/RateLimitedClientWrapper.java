@@ -5,8 +5,8 @@ import org.schabi.newpipe.downloader.ratelimiting.limiter.RateLimiter;
 import java.io.IOException;
 import java.net.ProtocolException;
 import java.time.Duration;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import okhttp3.OkHttpClient;
@@ -27,7 +27,8 @@ public class RateLimitedClientWrapper {
     );
 
     private final OkHttpClient client;
-    private final Map<String, RateLimiter> hostRateLimiters = new LinkedHashMap<>();
+    // concurrent: YouTube requests of a stream are made in parallel
+    private final Map<String, RateLimiter> hostRateLimiters = new ConcurrentHashMap<>();
 
     public RateLimitedClientWrapper(final OkHttpClient client) {
         this.client = client;

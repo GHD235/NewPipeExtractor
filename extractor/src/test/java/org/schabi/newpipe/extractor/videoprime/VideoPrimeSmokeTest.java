@@ -23,6 +23,8 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQu
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +106,63 @@ class VideoPrimeSmokeTest {
         assertTrue(response.responseCode() == 200 || response.responseCode() == 206,
                 "The audio of " + playable.getId() + " cannot be downloaded: HTTP "
                         + response.responseCode());
+    }
+
+    /**
+     * Old famous videos can keep working while new uploads break (YouTube rolls changes out to
+     * new videos first): the audio of a few videos uploaded these days must download too.
+     */
+    @Test
+    void youtubeRecentVideosDownload() throws Exception {
+        final List<String> urls = new ArrayList<>();
+        for (final String query : List.of("noticias", "music video", "gameplay")) {
+            SearchInfo.getInfo(ServiceList.YouTube, ServiceList.YouTube.getSearchQHFactory()
+                            .fromQuery(query, List.of(YoutubeSearchQueryHandlerFactory.VIDEOS), ""))
+                    .getRelatedItems().stream()
+                    .filter(item -> item instanceof StreamInfoItem)
+                    .map(item -> (StreamInfoItem) item)
+                    .filter(item -> item.getStreamType() == StreamType.VIDEO_STREAM
+                            && item.getDuration() > 0)
+                    .limit(2)
+                    .forEach(item -> urls.add(item.getUrl()));
+        }
+        int blockedIp = 0;
+        final List<String> downloaded = new ArrayList<>();
+        final List<String> failures = new ArrayList<>();
+        for (final String url : urls) {
+            try {
+                final StreamInfo info = StreamInfo.getInfo(ServiceList.YouTube, url);
+                final AudioStream audio = info.getAudioStreams().stream()
+                        .filter(s -> s.isUrl()
+                                && s.getDeliveryMethod() == DeliveryMethod.PROGRESSIVE_HTTP)
+                        .findFirst()
+                        .orElse(null);
+                if (audio == null) {
+                    failures.add(url + ": no progressive audio");
+                    continue;
+                }
+                final int code = NewPipe.getDownloader().get(audio.getContent(),
+                        Map.of("Range", List.of("bytes=0-65535"))).responseCode();
+                System.out.println("VIDEOPRIME recent video " + url + " ("
+                        + info.getUploadDate() + "): audio HTTP " + code);
+                if (code == 200 || code == 206) {
+                    downloaded.add(url);
+                } else {
+                    failures.add(url + ": audio HTTP " + code);
+                }
+            } catch (final SignInConfirmNotBotException e) {
+                blockedIp++;
+            } catch (final Exception e) {
+                failures.add(url + ": " + e);
+            }
+        }
+        System.out.println("VIDEOPRIME recent videos: " + downloaded.size() + " downloaded, "
+                + blockedIp + " IP blocked, failures: " + failures);
+        assumeTrue(downloaded.size() + failures.size() > 0,
+                "YouTube blocked this server's IP for every video: nothing could be checked");
+        assertFalse(downloaded.isEmpty(),
+                "The audio of no recent video downloads (old ones may still work): "
+                        + failures);
     }
 
     @Test
