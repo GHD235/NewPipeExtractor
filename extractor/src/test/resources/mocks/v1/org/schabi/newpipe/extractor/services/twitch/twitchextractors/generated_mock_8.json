@@ -1,0 +1,47 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://usher.ttvnw.net/vod/2903404377.m3u8?allow_source\u003dtrue\u0026allow_audio_only\u003dtrue\u0026fast_bread\u003dtrue\u0026playlist_include_framerate\u003dtrue\u0026sig\u003d1240e87ebf0e2a431521b991ef373c563e1b58bb\u0026token\u003d%7B%22authorization%22%3A%7B%22forbidden%22%3Afalse%2C%22reason%22%3A%22%22%7D%2C%22chansub%22%3A%7B%22restricted_bitrates%22%3A%5B%5D%7D%2C%22device_id%22%3Anull%2C%22expires%22%3A1792400069%2C%22https_required%22%3Atrue%2C%22privileged%22%3Afalse%2C%22user_id%22%3Anull%2C%22version%22%3A3%2C%22vod_id%22%3A2903404377%2C%22maximum_resolution%22%3A%22FULL_HD%22%2C%22maximum_video_bitrate_kbps%22%3A12500%2C%22maximum_resolution_reasons%22%3A%7B%22QUAD_HD%22%3A%5B%22AUTHZ_NOT_LOGGED_IN%22%5D%2C%22ULTRA_HD%22%3A%5B%22AUTHZ_NOT_LOGGED_IN%22%5D%7D%2C%22maximum_video_bitrate_kbps_reasons%22%3A%5B%22AUTHZ_DISALLOWED_BITRATE%22%5D%2C%22channel_name%22%3A%22%22%7D",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "content-type": [
+        "application/vnd.apple.mpegurl"
+      ],
+      "date": [
+        "Sun, 18 Oct 2026 12:54:29 GMT"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 13f73562b215175ddd75c2902ae36650.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "BFcKNPwlAr-iduRskjeflzAJKgzEiT9vwBsbjrn7SYoGiO-GxgI6zA\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "IAD61-P1"
+      ],
+      "x-amzn-trace-id": [
+        "Root\u003d1-6ad4c185-0bb92a9e714bd5802636a598"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ]
+    },
+    "responseBody": "#EXTM3U\n#EXT-X-TWITCH-INFO:ORIGIN\u003d\"s3\",B\u003d\"false\",REGION\u003d\"NA\",USER-IP\u003d\"127.0.0.1\",SERVING-ID\u003d\"95784b4674c44dcb929b2d34bb3f8a94\",CLUSTER\u003d\"cloudfront_vod\",USER-COUNTRY\u003d\"US\",MANIFEST-CLUSTER\u003d\"cloudfront_vod\"\n#EXT-X-MEDIA:TYPE\u003dVIDEO,GROUP-ID\u003d\"chunked\",NAME\u003d\"1080p60\",AUTOSELECT\u003dNO,DEFAULT\u003dNO\n#EXT-X-STREAM-INF:BANDWIDTH\u003d6398000,CODECS\u003d\"avc1.64002A,mp4a.40.2\",RESOLUTION\u003d1920x1080,VIDEO\u003d\"chunked\",FRAME-RATE\u003d60.000\nhttps://d3stzm2eumvgb4.cloudfront.net/b1da62a6fceaf27a8663_ibai_318059615587_1792258491/chunked/index-dvr.m3u8\n#EXT-X-MEDIA:TYPE\u003dVIDEO,GROUP-ID\u003d\"720p60\",NAME\u003d\"720p60\",AUTOSELECT\u003dYES,DEFAULT\u003dYES\n#EXT-X-STREAM-INF:BANDWIDTH\u003d3133292,CODECS\u003d\"avc1.4D4020,mp4a.40.2\",RESOLUTION\u003d1280x720,VIDEO\u003d\"720p60\",FRAME-RATE\u003d60.000\nhttps://d3stzm2eumvgb4.cloudfront.net/b1da62a6fceaf27a8663_ibai_318059615587_1792258491/720p60/index-dvr.m3u8\n#EXT-X-MEDIA:TYPE\u003dVIDEO,GROUP-ID\u003d\"720p30\",NAME\u003d\"720p\",AUTOSELECT\u003dYES,DEFAULT\u003dYES\n#EXT-X-STREAM-INF:BANDWIDTH\u003d2327980,CODECS\u003d\"avc1.4D401F,mp4a.40.2\",RESOLUTION\u003d1280x720,VIDEO\u003d\"720p30\",FRAME-RATE\u003d30.000\nhttps://d3stzm2eumvgb4.cloudfront.net/b1da62a6fceaf27a8663_ibai_318059615587_1792258491/720p30/index-dvr.m3u8\n#EXT-X-MEDIA:TYPE\u003dVIDEO,GROUP-ID\u003d\"480p30\",NAME\u003d\"480p\",AUTOSELECT\u003dYES,DEFAULT\u003dYES\n#EXT-X-STREAM-INF:BANDWIDTH\u003d1422976,CODECS\u003d\"avc1.4D401F,mp4a.40.2\",RESOLUTION\u003d852x480,VIDEO\u003d\"480p30\",FRAME-RATE\u003d30.000\nhttps://d3stzm2eumvgb4.cloudfront.net/b1da62a6fceaf27a8663_ibai_318059615587_1792258491/480p30/index-dvr.m3u8\n#EXT-X-MEDIA:TYPE\u003dVIDEO,GROUP-ID\u003d\"360p30\",NAME\u003d\"360p\",AUTOSELECT\u003dYES,DEFAULT\u003dYES\n#EXT-X-STREAM-INF:BANDWIDTH\u003d697406,CODECS\u003d\"avc1.4D401E,mp4a.40.2\",RESOLUTION\u003d640x360,VIDEO\u003d\"360p30\",FRAME-RATE\u003d30.000\nhttps://d3stzm2eumvgb4.cloudfront.net/b1da62a6fceaf27a8663_ibai_318059615587_1792258491/360p30/index-dvr.m3u8\n#EXT-X-MEDIA:TYPE\u003dVIDEO,GROUP-ID\u003d\"160p30\",NAME\u003d\"160p\",AUTOSELECT\u003dYES,DEFAULT\u003dYES\n#EXT-X-STREAM-INF:BANDWIDTH\u003d287774,CODECS\u003d\"avc1.4D400C,mp4a.40.2\",RESOLUTION\u003d284x160,VIDEO\u003d\"160p30\",FRAME-RATE\u003d30.000\nhttps://d3stzm2eumvgb4.cloudfront.net/b1da62a6fceaf27a8663_ibai_318059615587_1792258491/160p30/index-dvr.m3u8\n#EXT-X-MEDIA:TYPE\u003dVIDEO,GROUP-ID\u003d\"audio_only\",NAME\u003d\"Audio Only\",AUTOSELECT\u003dNO,DEFAULT\u003dNO\n#EXT-X-STREAM-INF:BANDWIDTH\u003d218429,CODECS\u003d\"mp4a.40.2\",VIDEO\u003d\"audio_only\"\nhttps://d3stzm2eumvgb4.cloudfront.net/b1da62a6fceaf27a8663_ibai_318059615587_1792258491/audio_only/index-dvr.m3u8",
+    "latestUrl": "https://usher.ttvnw.net/vod/2903404377.m3u8?allow_source\u003dtrue\u0026allow_audio_only\u003dtrue\u0026fast_bread\u003dtrue\u0026playlist_include_framerate\u003dtrue\u0026sig\u003d1240e87ebf0e2a431521b991ef373c563e1b58bb\u0026token\u003d%7B%22authorization%22%3A%7B%22forbidden%22%3Afalse%2C%22reason%22%3A%22%22%7D%2C%22chansub%22%3A%7B%22restricted_bitrates%22%3A%5B%5D%7D%2C%22device_id%22%3Anull%2C%22expires%22%3A1792400069%2C%22https_required%22%3Atrue%2C%22privileged%22%3Afalse%2C%22user_id%22%3Anull%2C%22version%22%3A3%2C%22vod_id%22%3A2903404377%2C%22maximum_resolution%22%3A%22FULL_HD%22%2C%22maximum_video_bitrate_kbps%22%3A12500%2C%22maximum_resolution_reasons%22%3A%7B%22QUAD_HD%22%3A%5B%22AUTHZ_NOT_LOGGED_IN%22%5D%2C%22ULTRA_HD%22%3A%5B%22AUTHZ_NOT_LOGGED_IN%22%5D%7D%2C%22maximum_video_bitrate_kbps_reasons%22%3A%5B%22AUTHZ_DISALLOWED_BITRATE%22%5D%2C%22channel_name%22%3A%22%22%7D"
+  }
+}
