@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.services.bandcamp.BandcampService;
 import org.schabi.newpipe.extractor.services.media_ccc.MediaCCCService;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
+import org.schabi.newpipe.extractor.services.tv.TvService;
 import org.schabi.newpipe.extractor.services.twitch.TwitchService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
@@ -43,17 +44,19 @@ public final class ServiceList {
     public static final BandcampService Bandcamp = new BandcampService(4);
     // VideoPrime
     public static final TwitchService Twitch = new TwitchService(5);
+    // VideoPrime: free-to-air TV channels of Spain
+    public static final TvService TV = new TvService(6);
 
     /**
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      *
      * <p>
-     * VideoPrime only offers YouTube and Twitch. The other services keep their code and ids
+     * VideoPrime only offers YouTube, Twitch and TV. The other services keep their code and ids
      * (so upstream changes still merge cleanly), but they are not registered.
      * </p>
      */
-    private static final List<StreamingService> SERVICES = List.of(YouTube, Twitch);
+    private static final List<StreamingService> SERVICES = List.of(YouTube, Twitch, TV);
 
     /**
      * Get all the supported services.

@@ -28,3 +28,13 @@ descifrado de firmas y parámetro `n` (`YoutubeSignaturesTest`, player JS), clie
 - Mocks: el RecordingDownloader cambia las IPs por 127.0.0.1 y eso invalida la firma del token
   de usher (403). Tras regrabar `TwitchExtractorsTest`, sustituir la respuesta 403 de usher por
   una lista HLS real descargada aparte con un token válido (IPs saneadas).
+
+## TV (servicio id 6, `services/tv/`)
+- Canales de la TDT española de la lista abierta de TDTChannels
+  (`https://www.tdtchannels.com/lists/tv.json`, caché de 1 h en `TvChannelList`). Solo se
+  listan canales con alguna opción: `M3U8` (se reproduce en la app), `YOUTUBE`
+  (`youtube.com/channel/<id>/live`, resolver con `TvParsingHelper.resolveYoutubeLive`) o `WEB`.
+- URLs propias (no son páginas reales): `https://www.tdtchannels.com/tv/<grupo>-<canal>`.
+- El kiosco y la búsqueda (local, sin acentos) solo devuelven canales `M3U8`.
+- Muchos canales de RTVE dan 403 fuera de España (geobloqueo): en el CI/entorno de EE. UU. no
+  se puede probar la reproducción, solo que la lista y las URLs son correctas.
