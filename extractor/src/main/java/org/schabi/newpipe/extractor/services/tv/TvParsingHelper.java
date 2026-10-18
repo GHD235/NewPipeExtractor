@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.tv;
 
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
@@ -17,8 +16,8 @@ public final class TvParsingHelper {
     /** Channel URLs are VideoPrime's own ids under the list's site; they are not real pages. */
     public static final String CHANNEL_URL_PREFIX = "https://www.tdtchannels.com/tv/";
 
-    private static final Pattern YOUTUBE_LIVE_VIDEO = Pattern.compile(
-            "<link rel=\"canonical\" href=\"(https://www\\.youtube\\.com/watch\\?v=[\\w-]{11})\"");
+    private static final Pattern YOUTUBE_VIDEO_ID = Pattern.compile(
+            "\"videoId\":\"([\\w-]{11})\"");
     private static final Pattern TWITCH_PLAYER = Pattern.compile(
             "player\\.twitch\\.tv/\\?(?:.*&)?channel=([A-Za-z0-9_]+)");
 
@@ -48,9 +47,13 @@ public final class TvParsingHelper {
     @Nullable
     public static String resolveYoutubeLive(@Nonnull final String channelLiveUrl)
             throws IOException, ExtractionException {
-        final Response response = NewPipe.getDownloader().get(channelLiveUrl);
-        final Matcher matcher = YOUTUBE_LIVE_VIDEO.matcher(response.responseBody());
-        return matcher.find() ? matcher.group(1) : null;
+        // the /live page of a channel that is streaming embeds the player of the live video
+        final String page = NewPipe.getDownloader().get(channelLiveUrl).responseBody();
+        if (!page.contains("\"isLive\":true")) {
+            return null;
+        }
+        final Matcher matcher = YOUTUBE_VIDEO_ID.matcher(page);
+        return matcher.find() ? "https://www.youtube.com/watch?v=" + matcher.group(1) : null;
     }
 
     /**
