@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
  */
 public class TwitchStreamExtractor extends StreamExtractor {
     private static final String TOKEN_PARAMS =
-            "params: {platform: \"web\", playerBackend: \"mediaplayer\", playerType: \"site\"}";
+            "params: {platform: \"web\", playerBackend: \"mediaplayer\", playerType: \"popout\"}";
 
     private static final String LIVE_QUERY = "query($login: String!) {"
             + " user(login: $login) { login displayName description profileImageURL(width: 150)"

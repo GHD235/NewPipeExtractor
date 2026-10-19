@@ -10,7 +10,7 @@
         "application/json"
       ],
       "Accept-Language": [
-        "en-GB, en;q\u003d0.9"
+        "en-GB, en;q=0.9"
       ]
     },
     "dataToSend": [
@@ -444,10 +444,12 @@
       32,
       92,
       34,
-      115,
-      105,
+      112,
+      111,
+      112,
+      111,
+      117,
       116,
-      101,
       92,
       34,
       125,
@@ -531,19 +533,19 @@
         "*"
       ],
       "alt-svc": [
-        "h3\u003d\":443\";ma\u003d3600,\"h3-29\"\u003d\":443\";ma\u003d3600,\"h3-27\"\u003d\":443\";ma\u003d3600"
+        "h3=\":443\";ma=3600,\"h3-29\"=\":443\";ma=3600,\"h3-27\"=\":443\";ma=3600"
       ],
       "content-length": [
         "1999"
       ],
       "content-type": [
-        "application/json; charset\u003dutf-8"
+        "application/json; charset=utf-8"
       ],
       "date": [
         "Sun, 18 Oct 2026 12:54:26 GMT"
       ],
       "x-amzn-trace-id": [
-        "Self\u003d1-6ad4c182-1141638f04949d256ac570d9;Root\u003d1-6ad4c183-d453b8f96fef7ff201968f2d"
+        "Self=1-6ad4c182-1141638f04949d256ac570d9;Root=1-6ad4c183-d453b8f96fef7ff201968f2d"
       ],
       "x-feature-flag": [
         "band-50"
@@ -558,7 +560,7 @@
         "gateway"
       ]
     },
-    "responseBody": "{\"data\":{\"user\":{\"login\":\"kato_junichi0817\",\"displayName\":\"加藤純一うん〇ちゃん\",\"description\":\"本当に好きなことで生きていく\",\"profileImageURL\":\"https://static-cdn.jtvnw.net/jtv_user_pictures/a4977cfd-1962-41ec-9355-ab2611b97552-profile_image-150x150.png\",\"followers\":{\"totalCount\":1226512},\"stream\":{\"id\":\"316599762802\",\"title\":\"ARCﾚｲﾀﾞｰｽﾞを１０００時間くらい一睡もせずにやる\",\"viewersCount\":41767,\"createdAt\":\"2026-10-17T07:54:28Z\",\"previewImageURL\":\"https://static-cdn.jtvnw.net/previews-ttv/live_user_kato_junichi0817-640x360.jpg\",\"game\":{\"displayName\":\"ARC Raiders\"},\"broadcaster\":{\"login\":\"kato_junichi0817\",\"displayName\":\"加藤純一うん〇ちゃん\",\"profileImageURL\":\"https://static-cdn.jtvnw.net/jtv_user_pictures/a4977cfd-1962-41ec-9355-ab2611b97552-profile_image-150x150.png\"}}},\"streamPlaybackAccessToken\":{\"value\":\"{\\\"adblock\\\":false,\\\"authorization\\\":{\\\"forbidden\\\":false,\\\"reason\\\":\\\"\\\"},\\\"blackout_enabled\\\":false,\\\"channel\\\":\\\"kato_junichi0817\\\",\\\"channel_id\\\":545050196,\\\"chansub\\\":{\\\"restricted_bitrates\\\":[],\\\"view_until\\\":1924905600},\\\"ci_gb\\\":false,\\\"geoblock_reason\\\":\\\"\\\",\\\"device_id\\\":null,\\\"expires\\\":1792329266,\\\"extended_history_allowed\\\":false,\\\"game\\\":\\\"\\\",\\\"hide_ads\\\":false,\\\"https_required\\\":true,\\\"mature\\\":false,\\\"notification_id\\\":null,\\\"partner\\\":false,\\\"platform\\\":\\\"web\\\",\\\"player_type\\\":\\\"site\\\",\\\"private\\\":{\\\"allowed_to_view\\\":true},\\\"privileged\\\":false,\\\"role\\\":\\\"\\\",\\\"server_ads\\\":true,\\\"show_ads\\\":true,\\\"subscriber\\\":false,\\\"turbo\\\":false,\\\"user_id\\\":null,\\\"user_ip\\\":\\\"127.0.0.1\\\",\\\"version\\\":3,\\\"maximum_resolution\\\":\\\"FULL_HD\\\",\\\"maximum_video_bitrate_kbps\\\":12500,\\\"maximum_resolution_reasons\\\":{\\\"QUAD_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"],\\\"ULTRA_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"]},\\\"maximum_video_bitrate_kbps_reasons\\\":[\\\"AUTHZ_DISALLOWED_BITRATE\\\"]}\",\"signature\":\"3bf43fbe6e5a7d8cf559321ca3fd75064306d2e2\"}},\"extensions\":{\"durationMilliseconds\":50,\"requestID\":\"01M57H7SM2WHYT0JPHHM2DFF3A\"}}",
+    "responseBody": "{\"data\":{\"user\":{\"login\":\"kato_junichi0817\",\"displayName\":\"\u52a0\u85e4\u7d14\u4e00\u3046\u3093\u3007\u3061\u3083\u3093\",\"description\":\"\u672c\u5f53\u306b\u597d\u304d\u306a\u3053\u3068\u3067\u751f\u304d\u3066\u3044\u304f\",\"profileImageURL\":\"https://static-cdn.jtvnw.net/jtv_user_pictures/a4977cfd-1962-41ec-9355-ab2611b97552-profile_image-150x150.png\",\"followers\":{\"totalCount\":1226512},\"stream\":{\"id\":\"316599762802\",\"title\":\"ARC\uff9a\uff72\uff80\uff9e\uff70\uff7d\uff9e\u3092\uff11\uff10\uff10\uff10\u6642\u9593\u304f\u3089\u3044\u4e00\u7761\u3082\u305b\u305a\u306b\u3084\u308b\",\"viewersCount\":41767,\"createdAt\":\"2026-10-17T07:54:28Z\",\"previewImageURL\":\"https://static-cdn.jtvnw.net/previews-ttv/live_user_kato_junichi0817-640x360.jpg\",\"game\":{\"displayName\":\"ARC Raiders\"},\"broadcaster\":{\"login\":\"kato_junichi0817\",\"displayName\":\"\u52a0\u85e4\u7d14\u4e00\u3046\u3093\u3007\u3061\u3083\u3093\",\"profileImageURL\":\"https://static-cdn.jtvnw.net/jtv_user_pictures/a4977cfd-1962-41ec-9355-ab2611b97552-profile_image-150x150.png\"}}},\"streamPlaybackAccessToken\":{\"value\":\"{\\\"adblock\\\":false,\\\"authorization\\\":{\\\"forbidden\\\":false,\\\"reason\\\":\\\"\\\"},\\\"blackout_enabled\\\":false,\\\"channel\\\":\\\"kato_junichi0817\\\",\\\"channel_id\\\":545050196,\\\"chansub\\\":{\\\"restricted_bitrates\\\":[],\\\"view_until\\\":1924905600},\\\"ci_gb\\\":false,\\\"geoblock_reason\\\":\\\"\\\",\\\"device_id\\\":null,\\\"expires\\\":1792329266,\\\"extended_history_allowed\\\":false,\\\"game\\\":\\\"\\\",\\\"hide_ads\\\":false,\\\"https_required\\\":true,\\\"mature\\\":false,\\\"notification_id\\\":null,\\\"partner\\\":false,\\\"platform\\\":\\\"web\\\",\\\"player_type\\\":\\\"site\\\",\\\"private\\\":{\\\"allowed_to_view\\\":true},\\\"privileged\\\":false,\\\"role\\\":\\\"\\\",\\\"server_ads\\\":true,\\\"show_ads\\\":true,\\\"subscriber\\\":false,\\\"turbo\\\":false,\\\"user_id\\\":null,\\\"user_ip\\\":\\\"127.0.0.1\\\",\\\"version\\\":3,\\\"maximum_resolution\\\":\\\"FULL_HD\\\",\\\"maximum_video_bitrate_kbps\\\":12500,\\\"maximum_resolution_reasons\\\":{\\\"QUAD_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"],\\\"ULTRA_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"]},\\\"maximum_video_bitrate_kbps_reasons\\\":[\\\"AUTHZ_DISALLOWED_BITRATE\\\"]}\",\"signature\":\"3bf43fbe6e5a7d8cf559321ca3fd75064306d2e2\"}},\"extensions\":{\"durationMilliseconds\":50,\"requestID\":\"01M57H7SM2WHYT0JPHHM2DFF3A\"}}",
     "latestUrl": "https://gql.twitch.tv/gql"
   }
 }
