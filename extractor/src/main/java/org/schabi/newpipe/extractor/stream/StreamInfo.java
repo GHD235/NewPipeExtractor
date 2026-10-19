@@ -290,6 +290,11 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setLoudnessDb(extractor.getLoudnessDb());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
             streamInfo.setSubtitles(extractor.getSubtitlesDefault());
         } catch (final Exception e) {
             streamInfo.addError(e);
@@ -373,6 +378,7 @@ public class StreamInfo extends Info {
     private long viewCount = -1;
     private long likeCount = -1;
     private long dislikeCount = -1;
+    private double loudnessDb = Double.NaN;
 
     private String uploaderName = "";
     private String uploaderUrl = "";
@@ -519,6 +525,19 @@ public class StreamInfo extends Info {
 
     public void setDislikeCount(final long dislikeCount) {
         this.dislikeCount = dislikeCount;
+    }
+
+    /**
+     * @return how much louder than the service's target the audio is, in dB, or
+     * {@link Double#NaN} if not available
+     * @see StreamExtractor#getLoudnessDb()
+     */
+    public double getLoudnessDb() {
+        return loudnessDb;
+    }
+
+    public void setLoudnessDb(final double loudnessDb) {
+        this.loudnessDb = loudnessDb;
     }
 
     public String getUploaderName() {

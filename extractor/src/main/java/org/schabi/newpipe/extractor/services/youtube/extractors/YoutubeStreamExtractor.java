@@ -915,6 +915,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         throw new ContentNotAvailableException("Got error " + status + ": \"" + reason + "\"");
     }
 
+    @Override
+    public double getLoudnessDb() {
+        // the same for every audio format of the video
+        final JsonArray formats = visionOsStreamingData == null ? null
+                : visionOsStreamingData.getArray(ADAPTIVE_FORMATS);
+        if (formats != null) {
+            for (final Object format : formats) {
+                if (format instanceof JsonObject
+                        && ((JsonObject) format).getString("mimeType", "").startsWith("audio/")
+                        && ((JsonObject) format).has("loudnessDb")) {
+                    return ((JsonObject) format).getDouble("loudnessDb");
+                }
+            }
+        }
+        return Double.NaN;
+    }
+
     private void fetchVisionOsClient(@Nonnull final Localization localization,
                                      @Nonnull final ContentCountry contentCountry,
                                      @Nonnull final String videoId) throws IOException,

@@ -86,6 +86,11 @@ class VideoPrimeSmokeTest {
             }
         }
         System.out.println("VIDEOPRIME YouTube failures: " + failures);
+        if (playable != null) {
+            // used by the app to even out the volume of songs
+            System.out.println("VIDEOPRIME loudness of " + playable.getId() + ": "
+                    + playable.getLoudnessDb() + " dB");
+        }
         if (blockedIp > 0) {
             System.out.println("VIDEOPRIME YouTube blocked the IP of this server for " + blockedIp
                     + " of " + VIDEO_IDS.length + " videos (not a problem of the app)");

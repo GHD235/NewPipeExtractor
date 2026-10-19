@@ -168,6 +168,17 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
+     * VideoPrime: how much louder than the service's loudness target the audio is, in decibels,
+     * so that players can turn loud songs down to the same perceived volume.
+     *
+     * @return the difference in dB (positive: louder than the target), or {@link Double#NaN}
+     * if not available
+     */
+    public double getLoudnessDb() throws ParsingException {
+        return Double.NaN;
+    }
+
+    /**
      * The Url to the page of the creator/uploader of the stream. This must not be a homepage,
      * but the page offered by the service the extractor handles. This url will be handled by the
      * {@link ChannelExtractor}, so be sure to implement that one before you return a value here,
