@@ -103,7 +103,7 @@ public class TwitchStreamExtractor extends StreamExtractor {
         }
 
         final Response response = downloader.get(hlsMasterUrl);
-        if (response.responseCode() == 403) {
+        if (response.responseCode() == 403 && !isLive) {
             throw new PaidContentException("This Twitch content is only for subscribers");
         }
         if (response.responseCode() != 200) {
@@ -234,12 +234,14 @@ public class TwitchStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public MultiInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
-        final String login = isLive
-                ? owner.getString("login")
-                : item.getObject("owner").getString("login");
+        final String login = getUploaderLogin();
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        if (login == null) {
+            // deleted or banned account
+            return collector;
+        }
         final JsonObject user = TwitchParsingHelper.gql(RELATED_QUERY, Map.of("login", login))
                 .getObject("user");
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
         final JsonArray edges = user.getObject("videos").getArray("edges");
         for (int i = 0; i < edges.size(); i++) {
             final JsonObject video = edges.getObject(i).getObject("node");
@@ -251,12 +253,17 @@ public class TwitchStreamExtractor extends StreamExtractor {
         return collector;
     }
 
-    @Override
-    public String getUploaderUrl() {
-        final String login = isLive
+    @Nullable
+    private String getUploaderLogin() {
+        return isLive
                 ? owner.getString("login")
                 : item.getObject("owner").getString("login");
-        return TwitchParsingHelper.getChannelUrl(login) + "/videos";
+    }
+
+    @Override
+    public String getUploaderUrl() {
+        final String login = getUploaderLogin();
+        return login == null ? "" : TwitchParsingHelper.getChannelUrl(login) + "/videos";
     }
 
     @Nonnull

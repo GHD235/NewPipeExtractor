@@ -840,6 +840,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (final IOException | ExtractionException | RuntimeException e) {
             webFuture.cancel(true);
             nextFuture.cancel(true);
+            // the cached visitorData may be the reason (e.g. flagged as a bot): ask for a new
+            // one next time instead of failing every video until it expires
+            YoutubeParsingHelper.clearVisitorDataCache();
             throw e;
         }
         setStreamType();

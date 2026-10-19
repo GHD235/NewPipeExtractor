@@ -100,14 +100,16 @@ public class TwitchSearchExtractor extends SearchExtractor {
             for (final JsonObject item : items(channels)) {
                 collector.commit(new TwitchChannelInfoItemExtractor(item));
             }
-            nextChannels = channels.getString("cursor", "");
+            // a section that returned nothing is over, even if Twitch still sends a cursor
+            nextChannels = items(channels).isEmpty() ? "" : channels.getString("cursor", "");
         }
         if (videosCursor != null) {
             final JsonObject videos = result.getObject("videos");
             for (final JsonObject item : items(videos)) {
                 collector.commit(new TwitchVideoInfoItemExtractor(item));
             }
-            nextVideos = videos.getString("cursor", "");
+            // a section that returned nothing is over, even if Twitch still sends a cursor
+            nextVideos = items(videos).isEmpty() ? "" : videos.getString("cursor", "");
         }
 
         final Page nextPage = nextChannels.isEmpty() && nextVideos.isEmpty()

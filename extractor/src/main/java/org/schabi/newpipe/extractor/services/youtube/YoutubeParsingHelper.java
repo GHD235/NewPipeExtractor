@@ -564,7 +564,8 @@ public final class YoutubeParsingHelper {
     /**
      * Get the client version used by YouTube website on InnerTube requests.
      */
-    public static String getClientVersion() throws IOException, ExtractionException {
+    public static synchronized String getClientVersion()
+            throws IOException, ExtractionException {
         if (!isNullOrEmpty(clientVersion)) {
             return clientVersion;
         }
@@ -1419,7 +1420,7 @@ public final class YoutubeParsingHelper {
      */
     private static final Map<String, CachedVisitorData> VISITOR_DATA_CACHE =
             new ConcurrentHashMap<>();
-    private static final long VISITOR_DATA_TTL_MILLIS = 30 * 60 * 1000L;
+    private static final long VISITOR_DATA_TTL_MILLIS = 10 * 60 * 1000L;
 
     private static final class CachedVisitorData {
         final String visitorData;

@@ -70,11 +70,14 @@ public final class TwitchParsingHelper {
 
         final JsonObject json = JsonUtils.toJsonObject(response.responseBody());
         final JsonArray errors = json.getArray("errors");
-        if (!errors.isEmpty()) {
+        final JsonObject data = json.getObject("data");
+        // an error in one field (e.g. one channel of a batch) still comes with the rest of the
+        // data: each extractor checks the fields it needs
+        if (!errors.isEmpty() && data.isEmpty()) {
             throw new ExtractionException("Twitch GQL error: "
                     + errors.getObject(0).getString("message"));
         }
-        return json.getObject("data");
+        return data;
     }
 
     /**
