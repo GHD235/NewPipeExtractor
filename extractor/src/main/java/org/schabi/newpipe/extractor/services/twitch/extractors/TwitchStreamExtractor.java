@@ -1,9 +1,11 @@
 package org.schabi.newpipe.extractor.services.twitch.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -224,6 +226,31 @@ public class TwitchStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
+    // VideoPrime: the channel's latest past broadcasts, shown below the stream
+    private static final String RELATED_QUERY = "query($login: String!) {"
+            + " user(login: $login) { videos(first: 20, sort: TIME) {"
+            + " edges { node { " + TwitchGqlFields.VIDEO + " } } } } }";
+
+    @Nullable
+    @Override
+    public MultiInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
+        final String login = isLive
+                ? owner.getString("login")
+                : item.getObject("owner").getString("login");
+        final JsonObject user = TwitchParsingHelper.gql(RELATED_QUERY, Map.of("login", login))
+                .getObject("user");
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final JsonArray edges = user.getObject("videos").getArray("edges");
+        for (int i = 0; i < edges.size(); i++) {
+            final JsonObject video = edges.getObject(i).getObject("node");
+            // not the past broadcast being watched
+            if (isLive || !getId().equals("videos/" + video.getString("id"))) {
+                collector.commit(new TwitchVideoInfoItemExtractor(video));
+            }
+        }
+        return collector;
+    }
+
     @Override
     public String getUploaderUrl() {
         final String login = isLive

@@ -226,6 +226,7 @@ class VideoPrimeSmokeTest {
         start = System.nanoTime();
         final StreamInfo stream = StreamInfo.getInfo(twitch, first.getUrl());
         timed("Twitch live stream " + first.getUrl(), start);
+        System.out.println("VIDEOPRIME Twitch related videos: " + stream.getRelatedItems().size());
         if (stream.getVideoStreams().isEmpty() && stream.getHlsUrl().isEmpty()) {
             fail("Twitch live stream without video: " + first.getUrl());
         }
