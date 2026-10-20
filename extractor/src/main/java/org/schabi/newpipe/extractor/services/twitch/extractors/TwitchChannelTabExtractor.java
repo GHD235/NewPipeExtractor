@@ -70,8 +70,13 @@ public class TwitchChannelTabExtractor extends ChannelTabExtractor {
         String lastCursor = null;
         for (int i = 0; i < edges.size(); i++) {
             final JsonObject edge = edges.getObject(i);
-            collector.commit(new TwitchVideoInfoItemExtractor(edge.getObject("node")));
             lastCursor = edge.getString("cursor");
+            // the broadcast being recorded is the live stream above, not a video yet: listed,
+            // it looked like a new one-minute video next to the live stream
+            if ("RECORDING".equals(edge.getObject("node").getString("status"))) {
+                continue;
+            }
+            collector.commit(new TwitchVideoInfoItemExtractor(edge.getObject("node")));
         }
 
         final boolean hasNext = videos.getObject("pageInfo").getBoolean("hasNextPage", false);

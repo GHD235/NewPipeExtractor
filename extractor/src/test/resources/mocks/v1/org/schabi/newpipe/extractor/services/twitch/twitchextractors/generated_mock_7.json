@@ -104,6 +104,13 @@
       65,
       116,
       32,
+      115,
+      116,
+      97,
+      116,
+      117,
+      115,
+      32,
       112,
       114,
       101,
@@ -490,7 +497,7 @@
         "gateway"
       ]
     },
-    "responseBody": "{\"data\":{\"video\":{\"id\":\"2903404377\",\"title\":\"#WORLDS2026 | FURIA vs MVK | BRASIL vs VIETNMAN | ELIMINATORIO | \u00c9PICO | HISTORIA | EL QUE GANE vs KC | MA\u00d1ANA SORTEO | SE VIENE LO BUENO\",\"lengthSeconds\":13907,\"viewCount\":300010,\"publishedAt\":\"2026-10-17T17:34:59Z\",\"previewThumbnailURL\":\"https://static-cdn.jtvnw.net/cf_vods/d3stzm2eumvgb4/b1da62a6fceaf27a8663_ibai_318059615587_1792258491//thumb/thumb0-640x360.jpg\",\"owner\":{\"login\":\"ibai\",\"displayName\":\"ibai\",\"profileImageURL\":\"https://static-cdn.jtvnw.net/jtv_user_pictures/574228be-01ef-4eab-bc0e-a4f6b68bedba-profile_image-150x150.png\",\"followers\":{\"totalCount\":20328432}},\"game\":{\"displayName\":\"League of Legends\"},\"description\":null},\"videoPlaybackAccessToken\":{\"value\":\"{\\\"authorization\\\":{\\\"forbidden\\\":false,\\\"reason\\\":\\\"\\\"},\\\"chansub\\\":{\\\"restricted_bitrates\\\":[]},\\\"device_id\\\":null,\\\"expires\\\":1792400069,\\\"https_required\\\":true,\\\"privileged\\\":false,\\\"user_id\\\":null,\\\"version\\\":3,\\\"vod_id\\\":2903404377,\\\"maximum_resolution\\\":\\\"FULL_HD\\\",\\\"maximum_video_bitrate_kbps\\\":12500,\\\"maximum_resolution_reasons\\\":{\\\"QUAD_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"],\\\"ULTRA_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"]},\\\"maximum_video_bitrate_kbps_reasons\\\":[\\\"AUTHZ_DISALLOWED_BITRATE\\\"],\\\"channel_name\\\":\\\"\\\"}\",\"signature\":\"1240e87ebf0e2a431521b991ef373c563e1b58bb\"}},\"extensions\":{\"durationMilliseconds\":64,\"requestID\":\"01M57H7W2YHWE7WTZQDTWT5EZ1\"}}",
+    "responseBody": "{\"data\":{\"video\":{\"id\":\"2903404377\",\"title\":\"#WORLDS2026 | FURIA vs MVK | BRASIL vs VIETNMAN | ELIMINATORIO | ÉPICO | HISTORIA | EL QUE GANE vs KC | MAÑANA SORTEO | SE VIENE LO BUENO\",\"lengthSeconds\":13907,\"viewCount\":300010,\"publishedAt\":\"2026-10-17T17:34:59Z\",\"previewThumbnailURL\":\"https://static-cdn.jtvnw.net/cf_vods/d3stzm2eumvgb4/b1da62a6fceaf27a8663_ibai_318059615587_1792258491//thumb/thumb0-640x360.jpg\",\"owner\":{\"login\":\"ibai\",\"displayName\":\"ibai\",\"profileImageURL\":\"https://static-cdn.jtvnw.net/jtv_user_pictures/574228be-01ef-4eab-bc0e-a4f6b68bedba-profile_image-150x150.png\",\"followers\":{\"totalCount\":20328432}},\"game\":{\"displayName\":\"League of Legends\"},\"description\":null},\"videoPlaybackAccessToken\":{\"value\":\"{\\\"authorization\\\":{\\\"forbidden\\\":false,\\\"reason\\\":\\\"\\\"},\\\"chansub\\\":{\\\"restricted_bitrates\\\":[]},\\\"device_id\\\":null,\\\"expires\\\":1792400069,\\\"https_required\\\":true,\\\"privileged\\\":false,\\\"user_id\\\":null,\\\"version\\\":3,\\\"vod_id\\\":2903404377,\\\"maximum_resolution\\\":\\\"FULL_HD\\\",\\\"maximum_video_bitrate_kbps\\\":12500,\\\"maximum_resolution_reasons\\\":{\\\"QUAD_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"],\\\"ULTRA_HD\\\":[\\\"AUTHZ_NOT_LOGGED_IN\\\"]},\\\"maximum_video_bitrate_kbps_reasons\\\":[\\\"AUTHZ_DISALLOWED_BITRATE\\\"],\\\"channel_name\\\":\\\"\\\"}\",\"signature\":\"1240e87ebf0e2a431521b991ef373c563e1b58bb\"}},\"extensions\":{\"durationMilliseconds\":64,\"requestID\":\"01M57H7W2YHWE7WTZQDTWT5EZ1\"}}",
     "latestUrl": "https://gql.twitch.tv/gql"
   }
 }

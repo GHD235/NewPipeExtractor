@@ -245,8 +245,9 @@ public class TwitchStreamExtractor extends StreamExtractor {
         final JsonArray edges = user.getObject("videos").getArray("edges");
         for (int i = 0; i < edges.size(); i++) {
             final JsonObject video = edges.getObject(i).getObject("node");
-            // not the past broadcast being watched
-            if (isLive || !getId().equals("videos/" + video.getString("id"))) {
+            // not the past broadcast being watched, nor the recording of this live stream
+            final boolean recording = "RECORDING".equals(video.getString("status"));
+            if (isLive ? !recording : !getId().equals("videos/" + video.getString("id"))) {
                 collector.commit(new TwitchVideoInfoItemExtractor(video));
             }
         }

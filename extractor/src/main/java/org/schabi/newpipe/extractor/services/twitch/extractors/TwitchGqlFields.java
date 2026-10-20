@@ -6,7 +6,7 @@ package org.schabi.newpipe.extractor.services.twitch.extractors;
  */
 final class TwitchGqlFields {
     /** Fields of a {@code Video} (past broadcast, highlight or upload). */
-    static final String VIDEO = "id title lengthSeconds viewCount publishedAt"
+    static final String VIDEO = "id title lengthSeconds viewCount publishedAt status"
             + " previewThumbnailURL(width: 640, height: 360)"
             + " owner { login displayName profileImageURL(width: 150) }"
             + " game { displayName }";

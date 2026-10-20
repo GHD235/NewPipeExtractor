@@ -10,7 +10,7 @@
         "application/json"
       ],
       "Accept-Language": [
-        "en-GB, en;q\u003d0.9"
+        "en-GB, en;q=0.9"
       ]
     },
     "dataToSend": [
@@ -370,6 +370,13 @@
       65,
       116,
       32,
+      115,
+      116,
+      97,
+      116,
+      117,
+      115,
+      32,
       112,
       114,
       101,
@@ -585,16 +592,16 @@
         "*"
       ],
       "alt-svc": [
-        "h3\u003d\":443\";ma\u003d3600,\"h3-29\"\u003d\":443\";ma\u003d3600,\"h3-27\"\u003d\":443\";ma\u003d3600"
+        "h3=\":443\";ma=3600,\"h3-29\"=\":443\";ma=3600,\"h3-27\"=\":443\";ma=3600"
       ],
       "content-type": [
-        "application/json; charset\u003dutf-8"
+        "application/json; charset=utf-8"
       ],
       "date": [
         "Sun, 18 Oct 2026 12:54:29 GMT"
       ],
       "x-amzn-trace-id": [
-        "Self\u003d1-6ad4c185-6aefd6da6e8454454ffc18e0;Root\u003d1-6ad4c185-fa0a00039ae8618cff9f5d6d"
+        "Self=1-6ad4c185-6aefd6da6e8454454ffc18e0;Root=1-6ad4c185-fa0a00039ae8618cff9f5d6d"
       ],
       "x-feature-flag": [
         "band-50"
