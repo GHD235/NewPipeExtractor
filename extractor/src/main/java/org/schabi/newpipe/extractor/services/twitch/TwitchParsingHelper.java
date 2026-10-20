@@ -146,6 +146,28 @@ public final class TwitchParsingHelper {
                 Image.ResolutionLevel.fromHeight(height)));
     }
 
+    /**
+     * The preview of a live stream: Twitch keeps the same address for a picture that changes,
+     * and gives a grey "no preview yet" picture during the first minutes, so the address gets a
+     * value that changes every few minutes (as twitch.tv does) or apps would cache it forever.
+     */
+    @Nonnull
+    public static List<Image> getLiveImages(@Nullable final String url,
+                                            final int width,
+                                            final int height) {
+        final List<Image> images = getImages(url, width, height);
+        if (images.isEmpty()) {
+            return images;
+        }
+        final Image image = images.get(0);
+        final String separator = image.getUrl().contains("?") ? "&" : "?";
+        return List.of(new Image(image.getUrl() + separator + "t="
+                + System.currentTimeMillis() / LIVE_PREVIEW_REFRESH_MILLIS,
+                image.getHeight(), image.getWidth(), image.getEstimatedResolutionLevel()));
+    }
+
+    private static final long LIVE_PREVIEW_REFRESH_MILLIS = 5 * 60 * 1000L;
+
     @Nullable
     public static DateWrapper parseDate(@Nullable final String date) throws ParsingException {
         if (date == null || date.isEmpty()) {

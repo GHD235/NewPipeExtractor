@@ -190,8 +190,9 @@ public class TwitchStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<Image> getThumbnails() {
-        return TwitchParsingHelper.getImages(
-                item.getString(isLive ? "previewImageURL" : "previewThumbnailURL"), 640, 360);
+        return isLive
+                ? TwitchParsingHelper.getLiveImages(item.getString("previewImageURL"), 640, 360)
+                : TwitchParsingHelper.getImages(item.getString("previewThumbnailURL"), 640, 360);
     }
 
     @Nonnull

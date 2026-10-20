@@ -23,4 +23,14 @@ class TwitchParsingHelperTest {
         assertTrue(TwitchParsingHelper.getImages(
                 "https://vod-secure.twitch.tv/_404/404_processing_640x360.png", 640, 360).isEmpty());
     }
+
+    @Test
+    void livePreviewChangesAddressOverTime() {
+        final String url = TwitchParsingHelper.getLiveImages(
+                "https://static-cdn.jtvnw.net/previews-ttv/live_user_x-{width}x{height}.jpg",
+                640, 360).get(0).getUrl();
+        assertTrue(url.startsWith(
+                "https://static-cdn.jtvnw.net/previews-ttv/live_user_x-640x360.jpg?t="), url);
+        assertTrue(TwitchParsingHelper.getLiveImages(null, 640, 360).isEmpty());
+    }
 }

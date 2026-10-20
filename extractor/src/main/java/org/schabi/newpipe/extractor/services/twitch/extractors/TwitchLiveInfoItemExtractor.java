@@ -37,7 +37,7 @@ public class TwitchLiveInfoItemExtractor implements StreamInfoItemExtractor {
     @Nonnull
     @Override
     public List<Image> getThumbnails() {
-        return TwitchParsingHelper.getImages(stream.getString("previewImageURL"), 640, 360);
+        return TwitchParsingHelper.getLiveImages(stream.getString("previewImageURL"), 640, 360);
     }
 
     @Override
