@@ -77,7 +77,24 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUrl() {
+        // VideoPrime: Shorts come as youtube.com/shorts/<id>, but the channel tabs (and so the
+        // rest of the app) know every video by its watch URL: use that one, or the same Short
+        // would be stored twice
+        final Element videoId = entryElement.getElementsByTag("yt:videoId").first();
+        if (videoId != null && !videoId.text().isEmpty()) {
+            return "https://www.youtube.com/watch?v=" + videoId.text();
+        }
+        return getLink();
+    }
+
+    private String getLink() {
         return entryElement.getElementsByTag("link").first().attr("href");
+    }
+
+    @Override
+    public boolean isShortFormContent() {
+        // the only hint the feed gives: Shorts link to youtube.com/shorts/<id>
+        return getLink().contains("/shorts/");
     }
 
     @Nonnull
