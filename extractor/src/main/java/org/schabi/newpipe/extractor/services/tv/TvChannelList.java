@@ -43,28 +43,8 @@ public final class TvChannelList {
         /** A YouTube live stream ({@code youtube.com/channel/<id>/live}). */
         YOUTUBE,
         /** A web player (Dailymotion, Twitch embed, ...). */
-        WEB,
-        /**
-         * Only watchable in the broadcaster's own app or website (Atresplayer, Mitele), because
-         * the live stream is DRM protected. The URL is the channel's official live page.
-         */
-        OFFICIAL_APP
+        WEB
     }
-
-    /**
-     * Atresmedia channels, which the TDTChannels list leaves out. Their live streams are DRM
-     * protected, so they open in Atresplayer.
-     */
-    private static final String[][] ATRESMEDIA = {
-            {"Antena 3", "antena3"},
-            {"laSexta", "lasexta"},
-            {"Neox", "neox"},
-            {"Nova", "nova"},
-            {"Mega", "mega"},
-            {"Atreseries", "atreseries"},
-    };
-    private static final String ATRESPLAYER_LIVE = "https://www.atresplayer.com/directos/";
-    private static final String GENERALIST_GROUP = "Generalistas";
 
     public static final class TvOption {
         private final Format format;
@@ -154,10 +134,7 @@ public final class TvChannelList {
             return null;
         }
 
-        /**
-         * The option VideoPrime prefers: in-app HLS, then YouTube, then a web player, then the
-         * broadcaster's app.
-         */
+        /** The option VideoPrime prefers: in-app HLS, then YouTube, then a web player. */
         @Nonnull
         public TvOption getBestOption() {
             for (final Format format : Format.values()) {
@@ -229,9 +206,6 @@ public final class TvChannelList {
                         channels.add(channel);
                     }
                 }
-                if (GENERALIST_GROUP.equals(group)) {
-                    addAtresmedia(channels, usedIds);
-                }
             }
         }
         return channels;
@@ -262,48 +236,27 @@ public final class TvChannelList {
                 options.add(new TvOption(Format.WEB, url));
             }
         }
+        if (options.isEmpty()) {
+            return null; // e.g. channels that need the broadcaster's own app
+        }
+
         final JsonArray extraInfo = json.getArray("extra_info");
         boolean onlyInSpain = false;
-        boolean needsOfficialApp = false;
         for (int e = 0; e < extraInfo.size(); e++) {
-            final String info = extraInfo.getString(e);
-            if ("GEO".equals(info)) {
+            if ("GEO".equals(extraInfo.getString(e))) {
                 onlyInSpain = true;
-            } else if ("EXTA".equals(info) || "EXTB".equals(info)) {
-                needsOfficialApp = true; // EXTA/EXTB: only in the broadcaster's app or web
             }
         }
 
-        final String web = emptyToNull(json.getString("web"));
-        if (options.isEmpty() && needsOfficialApp && web != null) {
-            options.add(new TvOption(Format.OFFICIAL_APP, web)); // e.g. Mediaset on Mitele
-        }
-        if (options.isEmpty()) {
-            return null; // e.g. channels that do not broadcast online
-        }
-
-        return new TvChannel(uniqueId(group, name, usedIds), name, group,
-                emptyToNull(json.getString("logo")), web, onlyInSpain,
-                Collections.unmodifiableList(options));
-    }
-
-    private static void addAtresmedia(final List<TvChannel> channels, final Set<String> usedIds) {
-        for (final String[] channel : ATRESMEDIA) {
-            final String web = ATRESPLAYER_LIVE + channel[1] + "/";
-            channels.add(new TvChannel(uniqueId(GENERALIST_GROUP, channel[0], usedIds),
-                    channel[0], GENERALIST_GROUP, null, web, true,
-                    List.of(new TvOption(Format.OFFICIAL_APP, web))));
-        }
-    }
-
-    private static String uniqueId(final String group, final String name,
-                                   final Set<String> usedIds) {
         String id = slug(group) + "-" + slug(name);
         for (int n = 2; usedIds.contains(id); n++) {
             id = slug(group) + "-" + slug(name) + "-" + n;
         }
         usedIds.add(id);
-        return id;
+
+        return new TvChannel(id, name, group, emptyToNull(json.getString("logo")),
+                emptyToNull(json.getString("web")), onlyInSpain,
+                Collections.unmodifiableList(options));
     }
 
     @Nonnull
