@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.services.local.LocalService;
 import org.schabi.newpipe.extractor.services.media_ccc.MediaCCCService;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
-import org.schabi.newpipe.extractor.services.tv.TvService;
 import org.schabi.newpipe.extractor.services.twitch.TwitchService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
@@ -45,9 +44,7 @@ public final class ServiceList {
     public static final BandcampService Bandcamp = new BandcampService(4);
     // VideoPrime
     public static final TwitchService Twitch = new TwitchService(5);
-    // VideoPrime: free-to-air TV channels of Spain
-    public static final TvService TV = new TvService(6);
-    // VideoPrime: files on the device (downloads)
+    // VideoPrime: files on the device (downloads). Id 6 was used by the removed TV service.
     public static final LocalService Local = new LocalService(7);
 
     /**
@@ -55,12 +52,12 @@ public final class ServiceList {
      * and give it the next free id.
      *
      * <p>
-     * VideoPrime only offers YouTube, Twitch and TV, plus local files. The other services keep
+     * VideoPrime only offers YouTube and Twitch, plus local files. The other services keep
      * their code and ids (so upstream changes still merge cleanly), but they are not
      * registered.
      * </p>
      */
-    private static final List<StreamingService> SERVICES = List.of(YouTube, Twitch, TV, Local);
+    private static final List<StreamingService> SERVICES = List.of(YouTube, Twitch, Local);
 
     /**
      * Get all the supported services.
