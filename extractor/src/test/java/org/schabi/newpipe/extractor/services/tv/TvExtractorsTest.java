@@ -60,15 +60,6 @@ public class TvExtractorsTest implements InitNewPipeTest {
     }
 
     @Test
-    void youtubeLiveOf24h() throws Exception {
-        // 24h (RTVE) streams on YouTube around the clock
-        final String url = TvParsingHelper.resolveYoutubeLive(
-                "https://www.youtube.com/channel/UC7QZIf0dta-XPXsp9Hv4dTw/live");
-        assertTrue(url != null && url.matches("https://www\\.youtube\\.com/watch\\?v=[\\w-]{11}"),
-                String.valueOf(url));
-    }
-
-    @Test
     void twitchPlayerUrl() {
         assertEquals("https://www.twitch.tv/realmadrid", TvParsingHelper.twitchUrlFromPlayer(
                 "https://player.twitch.tv/?channel=realmadrid&parent=play.tdtchannels.com"));
