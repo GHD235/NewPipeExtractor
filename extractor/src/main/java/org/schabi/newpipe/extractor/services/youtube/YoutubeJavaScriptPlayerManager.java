@@ -29,6 +29,8 @@ import java.util.Objects;
  */
 public final class YoutubeJavaScriptPlayerManager {
 
+    // VideoPrime: the app extracts several videos at once (player, next song, home prefetch);
+    // every public method is synchronized so this shared state is never used by two threads
     @Nonnull
     private static final Map<String, String> CACHED_THROTTLING_PARAMETERS = new HashMap<>();
 
@@ -76,7 +78,7 @@ public final class YoutubeJavaScriptPlayerManager {
      * signature timestamp failed
      */
     @Nonnull
-    public static Integer getSignatureTimestamp(@Nonnull final String videoId)
+    public static synchronized Integer getSignatureTimestamp(@Nonnull final String videoId)
             throws ParsingException {
         // Return the cached result if it is present
         if (cachedSignatureTimestamp != null) {
@@ -127,7 +129,7 @@ public final class YoutubeJavaScriptPlayerManager {
      * signature deobfuscation function failed
      */
     @Nonnull
-    public static String deobfuscateSignature(@Nonnull final String videoId,
+    public static synchronized String deobfuscateSignature(@Nonnull final String videoId,
                                               @Nonnull final String obfuscatedSignature)
             throws ParsingException {
         // If the signature deobfuscation function has been not extracted on a previous call, this
@@ -204,7 +206,7 @@ public final class YoutubeJavaScriptPlayerManager {
      * throttling parameter deobfuscation function failed
      */
     @Nonnull
-    public static String getUrlWithThrottlingParameterDeobfuscated(
+    public static synchronized String getUrlWithThrottlingParameterDeobfuscated(
             @Nonnull final String videoId,
             @Nonnull final String streamingUrl) throws ParsingException {
         final String obfuscatedThrottlingParameter =
@@ -280,7 +282,7 @@ public final class YoutubeJavaScriptPlayerManager {
      *
      * @return the current cache size of throttling parameters
      */
-    public static int getThrottlingParametersCacheSize() {
+    public static synchronized int getThrottlingParametersCacheSize() {
         return CACHED_THROTTLING_PARAMETERS.size();
     }
 
@@ -298,7 +300,7 @@ public final class YoutubeJavaScriptPlayerManager {
      * code will be fetched again and the corresponding extraction methods will be ran.
      * </p>
      */
-    public static void clearAllCaches() {
+    public static synchronized void clearAllCaches() {
         cachedJavaScriptPlayerCode = null;
         cachedSignatureDeobfuscationFunction = null;
         cachedThrottlingDeobfuscationFunction = null;
@@ -324,7 +326,7 @@ public final class YoutubeJavaScriptPlayerManager {
      * be done using {@link #clearAllCaches()}.
      * </p>
      */
-    public static void clearThrottlingParametersCache() {
+    public static synchronized void clearThrottlingParametersCache() {
         CACHED_THROTTLING_PARAMETERS.clear();
     }
 
