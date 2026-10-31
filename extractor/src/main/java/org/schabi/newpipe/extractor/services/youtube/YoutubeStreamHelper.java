@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
@@ -35,6 +36,42 @@ public final class YoutubeStreamHelper {
     private static final String PLAYER = "player";
 
     private YoutubeStreamHelper() {
+    }
+
+    /**
+     * VideoPrime: asks YouTube now for what every video needs first (the web client's version
+     * and the visitor data of both clients used for a video), so that the first video opened
+     * after starting the app does not wait for them (measured: about 3.4 s instead of 1.2 s).
+     * Both are kept for a while, see {@link YoutubeParsingHelper#getVisitorDataFromInnertube}.
+     *
+     * @param localization   the localization the videos will be asked with
+     * @param contentCountry the content country the videos will be asked with
+     * @throws IOException         if a request fails
+     * @throws ExtractionException if a response cannot be used
+     */
+    public static void warmUp(@Nonnull final Localization localization,
+                              @Nonnull final ContentCountry contentCountry)
+            throws IOException, ExtractionException {
+        final Future<String> visionOs = YoutubeParsingHelper.inParallel(
+                () -> {
+                    final InnertubeClientRequestInfo info =
+                            InnertubeClientRequestInfo.ofVisionOsClient();
+                    return YoutubeParsingHelper.getVisitorDataFromInnertube(info, localization,
+                            contentCountry, visionOsHeaders(localization), YOUTUBEI_V1_URL, null,
+                            false);
+                });
+        final InnertubeClientRequestInfo web = InnertubeClientRequestInfo.ofWebClient();
+        web.clientInfo.clientVersion = getClientVersion();
+        YoutubeParsingHelper.getVisitorDataFromInnertube(web, localization, contentCountry,
+                getYouTubeHeaders(), YOUTUBEI_V1_URL, null, false);
+        YoutubeParsingHelper.awaitParallel(visionOs);
+    }
+
+    @Nonnull
+    private static Map<String, List<String>> visionOsHeaders(
+            @Nonnull final Localization localization) {
+        return Map.of("User-Agent", List.of(getVisionOsUserAgent(localization)),
+                "X-Goog-Api-Format-Version", List.of("2"));
     }
 
     @Nonnull
@@ -78,9 +115,7 @@ public final class YoutubeStreamHelper {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
                 InnertubeClientRequestInfo.ofVisionOsClient();
 
-        final Map<String, List<String>> headers = Map.of("User-Agent",
-                List.of(getVisionOsUserAgent(localization)), "X-Goog-Api-Format-Version",
-                List.of("2"));
+        final Map<String, List<String>> headers = visionOsHeaders(localization);
 
         // We must always pass a valid visitorData to get valid player responses, which needs to be
         // got from YouTube
