@@ -264,7 +264,7 @@ public class YoutubeService extends StreamingService {
 
     // https://www.youtube.com/picker_ajax?action_language_json=1
     private static final List<Localization> SUPPORTED_LANGUAGES = Localization.listFrom(
-            "en-GB"
+            "en-GB", "es-ES"
             /*"af", "am", "ar", "az", "be", "bg", "bn", "bs", "ca", "cs", "da", "de",
             "el", "en", "en-GB", "es", "es-419", "es-US", "et", "eu", "fa", "fi", "fil", "fr",
             "fr-CA", "gl", "gu", "hi", "hr", "hu", "hy", "id", "is", "it", "iw", "ja",

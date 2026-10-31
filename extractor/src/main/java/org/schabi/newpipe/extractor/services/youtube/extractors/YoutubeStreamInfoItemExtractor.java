@@ -354,7 +354,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                                                final boolean isMixedNumber)
             throws NumberFormatException, ParsingException {
         // These approaches are language dependent
-        if (viewCountText.toLowerCase().contains(NO_VIEWS_LOWERCASE)) {
+        if (isNoViewsText(viewCountText)) {
             return 0;
         } else if (viewCountText.toLowerCase().contains("recommended")) {
             return -1;
@@ -372,7 +372,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 .getObject("accessibilityData")
                 .getString(LABEL, "");
 
-        if (videoInfoTitleAccessibilityData.toLowerCase().endsWith(NO_VIEWS_LOWERCASE)) {
+        if (videoInfoTitleAccessibilityData.toLowerCase().endsWith(NO_VIEWS_LOWERCASE)
+                || videoInfoTitleAccessibilityData.toLowerCase().endsWith("sin visualizaciones")) {
             return 0;
         }
 
@@ -393,6 +394,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     final String label = badge.getObject(METADATA_BADGE_RENDERER).getString(LABEL);
                     return "Premium".equals(label);
                 });
+    }
+
+    /**
+     * PulsePlay: "No views", also as YouTube writes it in Spanish.
+     *
+     * @param viewCountText a view count text
+     * @return whether it says that nobody watched the video
+     */
+    static boolean isNoViewsText(final String viewCountText) {
+        final String lower = viewCountText.toLowerCase(java.util.Locale.ROOT);
+        return lower.contains(NO_VIEWS_LOWERCASE) || lower.contains("sin visualizaciones")
+                || lower.contains("sin vistas");
     }
 
     private boolean isPremiere() {

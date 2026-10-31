@@ -38,11 +38,13 @@ public class TimeAgoParser {
      * <p>
      * Beginning with days ago, the date is considered as an approximation.
      *
-     * @param textualDate The original date as provided by the streaming service
+     * @param rawTextualDate The original date as provided by the streaming service
      * @return The parsed time (can be approximated)
      * @throws ParsingException if the time unit could not be recognized
      */
-    public DateWrapper parse(final String textualDate) throws ParsingException {
+    public DateWrapper parse(final String rawTextualDate) throws ParsingException {
+        // PulsePlay: YouTube in Spanish puts no-break spaces in "hace 10 horas"
+        final String textualDate = rawTextualDate.replace('\u00A0', ' ').replace('\u202F', ' ');
         for (final var caseUnitEntry : patternsHolder.specialCases().entrySet()) {
             final ChronoUnit chronoUnit = caseUnitEntry.getKey();
             for (final var caseMapToAmountEntry : caseUnitEntry.getValue().entrySet()) {

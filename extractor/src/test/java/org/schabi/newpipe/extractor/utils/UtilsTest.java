@@ -16,6 +16,21 @@ class UtilsTest {
     }
 
     @Test
+    void testMixedNumberWordToLongSpanish() throws ParsingException {
+        assertEquals(17_000, Utils.mixedNumberWordToLong("17 mil visualizaciones"));
+        assertEquals(3_900_000, Utils.mixedNumberWordToLong("3,9 M de suscriptores"));
+        assertEquals(2_000_000, Utils.mixedNumberWordToLong("2 mill. de visualizaciones"));
+        assertEquals(1_200_000_000, Utils.mixedNumberWordToLong("1,2 mil M de visualizaciones"));
+        assertEquals(5_000_000, Utils.mixedNumberWordToLong("5 millones"));
+        assertEquals(548, Utils.mixedNumberWordToLong("548 suscriptores"));
+        assertEquals(17_000, Utils.mixedNumberWordToLong("17\u00A0mil visualizaciones"));
+        assertEquals(3_900_000, Utils.mixedNumberWordToLong("3,9\u00A0M de suscriptores"));
+        assertEquals(17_000, Utils.mixedNumberWordToLong("17\u00A0K visualizaciones"));
+        assertEquals(6_500, Utils.mixedNumberWordToLong("6,5\u00A0K visualizaciones"));
+        assertEquals(12, Utils.mixedNumberWordToLong("12 Mbps"), "M must be a word of its own");
+    }
+
+    @Test
     void testJoin() {
         assertEquals("some,random,not-null,stuff", Utils.nonEmptyAndNullJoin(",",
                 "some", "null", "random", "", "not-null", null, "stuff"));

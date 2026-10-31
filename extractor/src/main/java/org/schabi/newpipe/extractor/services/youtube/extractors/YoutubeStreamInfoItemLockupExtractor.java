@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -48,6 +49,11 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     private static final String PREMIERES_LIVES_TEXT = "Scheduled for ";
     private static final DateTimeFormatter PREMIERES_DATE_FORMATTER =
             DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm");
+    // PulsePlay: YouTube in Spanish ("Se estrena el 2/11/26, 18:00", "Programado para el ...")
+    private static final Pattern PREMIERES_SPANISH = Pattern.compile(
+            "^(?:Se estrena(?: el)?|Estreno(?: el)?:?|Programado para(?: el)?)[\\s\\u00A0]+");
+    private static final DateTimeFormatter PREMIERES_DATE_FORMATTER_SHORT =
+            DateTimeFormatter.ofPattern("d/M/yy, H:mm");
 
     private final JsonObject lockupViewModel;
     private final TimeAgoParser timeAgoParser;
@@ -318,8 +324,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     private String getDateFromPremiere(@Nonnull final String dateText) {
         // This approach is language dependent
         // Remove the premieres text from the upload date metadata part
-        return dateText.replace(PREMIERES_VIDEOS_TEXT, "")
-                        .replace(PREMIERES_LIVES_TEXT, "");
+        return PREMIERES_SPANISH.matcher(dateText.replace(PREMIERES_VIDEOS_TEXT, "")
+                        .replace(PREMIERES_LIVES_TEXT, "")).replaceFirst("").trim();
     }
 
     @Nullable
@@ -338,13 +344,17 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         if (isPremiere()) {
             final String premiereDate = getDateFromPremiere(getDateText());
 
-            try {
-                // As we request a UTC offset of 0 minutes, we get the UTC date
-                final var dateTime = LocalDateTime.parse(premiereDate, PREMIERES_DATE_FORMATTER);
-                return new DateWrapper(dateTime.atZone(ZoneOffset.UTC).toInstant(), false);
-            } catch (final DateTimeParseException e) {
-                throw new ParsingException("Could not parse premiere upload date", e);
+            for (final DateTimeFormatter formatter
+                    : List.of(PREMIERES_DATE_FORMATTER, PREMIERES_DATE_FORMATTER_SHORT)) {
+                try {
+                    // As we request a UTC offset of 0 minutes, we get the UTC date
+                    final var dateTime = LocalDateTime.parse(premiereDate, formatter);
+                    return new DateWrapper(dateTime.atZone(ZoneOffset.UTC).toInstant(), false);
+                } catch (final DateTimeParseException ignored) {
+                    // the other format
+                }
             }
+            throw new ParsingException("Could not parse premiere upload date: " + premiereDate);
         }
 
         return timeAgoParser.parse(textualUploadDate);
@@ -410,7 +420,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     private long getViewCountFromViewCountText(@Nonnull final String viewCountText)
             throws NumberFormatException, ParsingException {
         // These approaches are language dependent
-        if (viewCountText.toLowerCase().contains(NO_VIEWS_LOWERCASE)) {
+        if (YoutubeStreamInfoItemExtractor.isNoViewsText(viewCountText)) {
             return 0;
         } else if (viewCountText.toLowerCase().contains("recommended")) {
             return -1;
@@ -500,7 +510,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     private boolean isPremiere() throws ParsingException {
         final String dateText = getDateText();
-        return dateText.contains(PREMIERES_VIDEOS_TEXT) || dateText.contains(PREMIERES_LIVES_TEXT);
+        return dateText.contains(PREMIERES_VIDEOS_TEXT) || dateText.contains(PREMIERES_LIVES_TEXT)
+                || PREMIERES_SPANISH.matcher(dateText).find();
     }
 
     private String getDateText() throws ParsingException {

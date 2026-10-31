@@ -9,8 +9,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -66,6 +68,14 @@ public final class Utils {
         return toRemove.replaceAll("\\D+", "");
     }
 
+    /** PulsePlay: a count with its multiplier ("17 K", "3,9 M", "17 mil", "1,2 mil M"...). */
+    private static final Pattern SPANISH_COUNT = Pattern.compile(
+            // YouTube separates them with no-break spaces
+            "(\\d+(?:[.,]\\d+)?)[\\s\\u00A0\\u202F]*"
+                    + "(mil[\\s\\u00A0\\u202F]*(?:M|mill\\.?|millones)"
+                    + "|millones|mill\\.?|mil|M|K|B)"
+                    + "(?![A-Za-z\\u00C0-\\u00FF])");
+
     /**
      * Convert a mixed number word to a long.
      *
@@ -84,6 +94,20 @@ public final class Utils {
      */
     public static long mixedNumberWordToLong(final String numberWord)
             throws NumberFormatException, ParsingException {
+        // PulsePlay: YouTube in Spanish ("17 mil", "3,9 M", "1,2 mil M", "2 mill.")
+        final Matcher spanish = SPANISH_COUNT.matcher(numberWord);
+        if (spanish.find()) {
+            final double count = Double.parseDouble(spanish.group(1).replace(",", "."));
+            final String word = spanish.group(2).toLowerCase(Locale.ROOT);
+            if (word.startsWith("mil") && word.length() > 3 && !word.startsWith("mill")) {
+                return Math.round(count * 1e9); // "mil M", "mil millones"
+            } else if (word.equals("mil") || word.equals("k")) {
+                return Math.round(count * 1e3);
+            } else if (word.equals("b")) {
+                return Math.round(count * 1e9);
+            }
+            return Math.round(count * 1e6); // "M", "mill.", "millones"
+        }
         String multiplier = "";
         try {
             multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
