@@ -490,31 +490,41 @@
     "word_separator": " ",
     "seconds": [
       "segundo",
-      "segundos"
+      "segundos",
+      "s",
+      "seg."
     ],
     "minutes": [
       "minuto",
-      "minutos"
+      "minutos",
+      "min",
+      "min."
     ],
     "hours": [
       "hora",
-      "horas"
+      "horas",
+      "h"
     ],
     "days": [
       "día",
-      "días"
+      "días",
+      "d"
     ],
     "weeks": [
       "semana",
-      "semanas"
+      "semanas",
+      "sem.",
+      "sem"
     ],
     "months": [
       "mes",
-      "meses"
+      "meses",
+      "m"
     ],
     "years": [
       "año",
-      "años"
+      "años",
+      "a"
     ]
   },
   "es-419": {
@@ -971,35 +981,30 @@
     "seconds": [
       "sekúndu",
       "sekúndum",
-
       "second",
       "seconds"
     ],
     "minutes": [
       "mínútu",
       "mínútum",
-
       "minute",
       "minutes"
     ],
     "hours": [
       "klukkustund",
       "klukkustundum",
-
       "hour",
       "hours"
     ],
     "days": [
       "degi",
       "dögum",
-
       "day",
       "days"
     ],
     "weeks": [
       "viku",
       "vikum",
-
       "week",
       "weeks"
     ],
@@ -1164,7 +1169,7 @@
   "km": {
     "word_separator": "",
     "seconds": [
-      "វិនាទី\u200bមុន",
+      "វិនាទី​មុន",
       "១វិនាទីមុន"
     ],
     "minutes": [
@@ -1172,23 +1177,23 @@
       "១នាទីមុន"
     ],
     "hours": [
-      "ម៉ោង\u200bមុន",
-      "១ម៉ោង\u200bមុន"
+      "ម៉ោង​មុន",
+      "១ម៉ោង​មុន"
     ],
     "days": [
       "ថ្ងៃមុន",
-      "១ថ្ងៃ\u200bមុន"
+      "១ថ្ងៃ​មុន"
     ],
     "weeks": [
-      "ស\u200bប្តា\u200bហ៍\u200bមុន",
-      "១ស\u200bប្តា\u200bហ៍\u200bមុន"
+      "ស​ប្តា​ហ៍​មុន",
+      "១ស​ប្តា​ហ៍​មុន"
     ],
     "months": [
       "ខែមុន",
       "១ខែមុន"
     ],
     "years": [
-      "ឆ្នាំ\u200bមុន",
+      "ឆ្នាំ​មុន",
       "១ឆ្នាំមុន"
     ]
   },
@@ -1278,22 +1283,22 @@
     ],
     "minutes": [
       "ນາທີກ່ອນນີ້",
-      "ນາ\u200bທີ\u200bກ່ອນ\u200bນີ້"
+      "ນາ​ທີ​ກ່ອນ​ນີ້"
     ],
     "hours": [
-      "ຊົ່ວ\u200bໂມງ\u200bກ່ອນ\u200bນີ້"
+      "ຊົ່ວ​ໂມງ​ກ່ອນ​ນີ້"
     ],
     "days": [
       "ມື້ກ່ອນນີ້"
     ],
     "weeks": [
-      "ອາ\u200bທິດ\u200bກ່ອນ\u200bນີ້"
+      "ອາ​ທິດ​ກ່ອນ​ນີ້"
     ],
     "months": [
-      "ເດືອນ\u200bກ່ອນ\u200bນີ້"
+      "ເດືອນ​ກ່ອນ​ນີ້"
     ],
     "years": [
-      "ປີ\u200bກ່ອນ\u200bນີ້"
+      "ປີ​ກ່ອນ​ນີ້"
     ]
   },
   "lt": {
@@ -1411,7 +1416,7 @@
     ],
     "weeks": [
       "ആഴ്ച",
-      "ആഴ്\u200cച"
+      "ആഴ്‌ച"
     ],
     "months": [
       "മാസം"

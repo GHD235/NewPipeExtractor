@@ -55,6 +55,25 @@ class TimeAgoParserTest {
         );
     }
 
+    /** PulsePlay: YouTube in Spanish gives short forms in the related videos. */
+    @org.junit.jupiter.api.Test
+    void parseSpanishShortForms() throws Exception {
+        final var now = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1, 1);
+        final var parser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                new Localization("es"), now);
+        assertEquals(now.minusMinutes(39), parser.parse("hace 39\u00A0min").getLocalDateTime());
+        assertEquals(now.minusHours(1), parser.parse("hace 1 h").getLocalDateTime());
+        assertEquals(now.minusDays(3).truncatedTo(ChronoUnit.DAYS),
+                parser.parse("hace 3 d").getLocalDateTime());
+        assertEquals(now.minusWeeks(2).truncatedTo(ChronoUnit.DAYS),
+                parser.parse("hace 2 sem.").getLocalDateTime());
+        assertEquals(now.minusMonths(4).truncatedTo(ChronoUnit.DAYS),
+                parser.parse("hace 4 m").getLocalDateTime());
+        assertEquals(now.minusMonths(4).truncatedTo(ChronoUnit.DAYS),
+                parser.parse("hace 4 meses").getLocalDateTime());
+        assertEquals(now.minusMinutes(5), parser.parse("hace 5 minutos").getLocalDateTime());
+    }
+
     static class ParseTimeAgoTestData {
         public static final String AGO_SUFFIX = " ago";
         private final Function<LocalDateTime, LocalDateTime> expectedApplyToNow;

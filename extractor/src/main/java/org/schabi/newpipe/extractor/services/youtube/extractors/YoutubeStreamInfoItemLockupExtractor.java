@@ -357,7 +357,13 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             throw new ParsingException("Could not parse premiere upload date: " + premiereDate);
         }
 
-        return timeAgoParser.parse(textualUploadDate);
+        try {
+            return timeAgoParser.parse(textualUploadDate);
+        } catch (final ParsingException e) {
+            // PulsePlay: an unknown short form ("hace 4 m" was one) left the whole list of related
+            // videos with an error; the item keeps its textual date and goes without a parsed one
+            return null;
+        }
     }
 
     @Override
