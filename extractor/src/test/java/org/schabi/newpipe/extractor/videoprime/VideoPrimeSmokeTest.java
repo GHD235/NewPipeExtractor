@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfo;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabInfo;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException;
 import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
@@ -235,19 +236,28 @@ class VideoPrimeSmokeTest {
         final ChannelInfo channel = ChannelInfo.getInfo(twitch, first.getUrl() + "/videos");
         final ChannelTabInfo videos = ChannelTabInfo.getInfo(twitch, channel.getTabs().get(0));
         timed("Twitch channel", start);
-        final InfoItem vod = videos.getRelatedItems().stream()
-                .filter(item -> item.getUrl().contains("/videos/"))
-                .findFirst()
-                .orElse(null);
-        if (vod == null) {
-            System.out.println("VIDEOPRIME Twitch channel without past broadcasts, skipped");
+        // some channels keep their past broadcasts for subscribers: those are skipped
+        int tried = 0;
+        for (final InfoItem vod : videos.getRelatedItems()) {
+            if (!vod.getUrl().contains("/videos/") || tried >= 5) {
+                continue;
+            }
+            tried++;
+            start = System.nanoTime();
+            final StreamInfo past;
+            try {
+                past = StreamInfo.getInfo(twitch, vod.getUrl());
+            } catch (final PaidContentException e) {
+                System.out.println("VIDEOPRIME Twitch past broadcast for subscribers: "
+                        + vod.getUrl());
+                continue;
+            }
+            timed("Twitch past broadcast", start);
+            if (past.getVideoStreams().isEmpty() && past.getHlsUrl().isEmpty()) {
+                fail("Twitch past broadcast without video: " + vod.getUrl());
+            }
             return;
         }
-        start = System.nanoTime();
-        final StreamInfo past = StreamInfo.getInfo(twitch, vod.getUrl());
-        timed("Twitch past broadcast", start);
-        if (past.getVideoStreams().isEmpty() && past.getHlsUrl().isEmpty()) {
-            fail("Twitch past broadcast without video: " + vod.getUrl());
-        }
+        System.out.println("VIDEOPRIME Twitch channel without public past broadcasts, skipped");
     }
 }
