@@ -141,6 +141,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // Also because a nonce should be unique, it should be different between clients used, so
     // three different strings are used.
     private String visionOsCpn;
+    @Nullable
+    private String liveChatContinuation;
 
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -728,6 +730,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return streamType;
     }
 
+    @Override
+    public boolean hasLiveChat() {
+        return liveChatContinuation != null;
+    }
+
+    @Override
+    @Nullable
+    public String getLiveChatContinuation() {
+        return liveChatContinuation;
+    }
+
     private void setStreamType() {
         if (playerResponse.getObject(PLAYABILITY_STATUS).has("liveStreamability")) {
             streamType = StreamType.LIVE_STREAM;
@@ -856,6 +869,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         setWebClientMetadataAndThumbnails(webPlayerResponse, videoId);
 
         nextResponse = YoutubeParsingHelper.awaitParallel(nextFuture);
+
+        // Check for live chat availability
+        findLiveChatContinuation(nextResponse);
+    }
+
+    private void findLiveChatContinuation(final JsonObject response) {
+        try {
+            final JsonObject liveChatRenderer = response
+                    .getObject("contents")
+                    .getObject("twoColumnWatchNextResults")
+                    .getObject("conversationBar")
+                    .getObject("liveChatRenderer");
+            liveChatContinuation = liveChatRenderer
+                    .getArray("continuations")
+                    .getObject(0)
+                    .getObject("reloadContinuationData")
+                    .getString("continuation");
+        } catch (final Exception e) {
+            liveChatContinuation = null;
+        }
     }
 
     private static void checkPlayabilityStatus(@Nonnull final JsonObject playabilityStatus)
